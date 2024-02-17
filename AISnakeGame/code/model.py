@@ -4,15 +4,18 @@ import torch.optim as optim
 import torch.nn.functional as F
 import os
 
+torch.cuda.set_device(0)
+
 
 class Linear_QNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
-        self.linear1 = nn.Linear(input_size, hidden_size)
-        self.linear2 = nn.Linear(hidden_size, output_size)
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.linear1 = nn.Linear(input_size, hidden_size).to(self.device)
+        self.linear2 = nn.Linear(hidden_size, output_size).to(self.device)
 
     def forward(self, x):
-        x = F.relu(self.linear1(x))
+        x = F.relu(self.linear1(x.to(self.device)))
         x = self.linear2(x)
         return x
 

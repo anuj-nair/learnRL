@@ -8,7 +8,6 @@ from game import SnakeGameAI, Direction, Point
 from model import Linear_QNet, QTrainer
 #from plotter_2 import plot
 
-
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
@@ -21,7 +20,13 @@ class Agent:
         self.epsilon = 0  # randomness
         self.gamma = 0.9  # discount rate 1 - 0
         self.memory = deque(maxlen=MAX_MEMORY)  # poplef()
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = Linear_QNet(11, 256, 3)
+
+        print('#####################')
+        print(self.device)
+        print('#####################')
+        self.model.to(self.device)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
 
